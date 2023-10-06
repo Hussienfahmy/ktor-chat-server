@@ -1,13 +1,17 @@
 package com.h_fahmy.chat.plugins
 
-import io.ktor.server.application.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import com.h_fahmy.chat.room.RoomController
+import com.h_fahmy.chat.routes.chatSocket
+import com.h_fahmy.chat.routes.getAllMessages
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.routing.Routing
+import org.koin.ktor.ext.inject
 
 fun Application.configureRouting() {
-    routing {
-        get("/") {
-            call.respondText("Hello World!")
-        }
+    val roomController by inject<RoomController>()
+    install(Routing) {
+        chatSocket(roomController = roomController)
+        getAllMessages(roomController = roomController)
     }
 }
