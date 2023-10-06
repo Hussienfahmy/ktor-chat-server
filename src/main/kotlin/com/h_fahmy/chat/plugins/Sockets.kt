@@ -1,9 +1,10 @@
 package com.h_fahmy.chat.plugins
 
-import io.ktor.server.application.*
-import io.ktor.server.routing.*
-import io.ktor.server.websocket.*
-import io.ktor.websocket.*
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.websocket.WebSockets
+import io.ktor.server.websocket.pingPeriod
+import io.ktor.server.websocket.timeout
 import java.time.Duration
 
 fun Application.configureSockets() {
@@ -12,18 +13,5 @@ fun Application.configureSockets() {
         timeout = Duration.ofSeconds(15)
         maxFrameSize = Long.MAX_VALUE
         masking = false
-    }
-    routing {
-        webSocket("/ws") { // websocketSession
-            for (frame in incoming) {
-                if (frame is Frame.Text) {
-                    val text = frame.readText()
-                    outgoing.send(Frame.Text("YOU SAID: $text"))
-                    if (text.equals("bye", ignoreCase = true)) {
-                        close(CloseReason(CloseReason.Codes.NORMAL, "Client said BYE"))
-                    }
-                }
-            }
-        }
     }
 }
