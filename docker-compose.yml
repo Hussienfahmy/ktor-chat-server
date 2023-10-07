@@ -3,7 +3,7 @@ services:
   chat-server:
     container_name: chat-server
     restart: unless-stopped
-    build: .
+    image: hussienfahmy/ktor-chat-server
     depends_on:
       - chat-db
     ports:
