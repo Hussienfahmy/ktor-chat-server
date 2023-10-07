@@ -27,14 +27,14 @@ fun Route.chatSocket(roomController: RoomController) {
 
         try {
             roomController.onJoin(
-                userName = session.userName,
+                userName = session.username,
                 sessionId = session.sessionId,
                 socket = this
             )
             incoming.consumeEach { frame ->
                 if (frame is Frame.Text) {
                     roomController.sendMessage(
-                        senderUserName = session.userName,
+                        senderUserName = session.username,
                         message = frame.readText()
                     )
                 }
@@ -45,7 +45,7 @@ fun Route.chatSocket(roomController: RoomController) {
             e.printStackTrace()
             call.respond(HttpStatusCode.InternalServerError, "Internal server error")
         } finally {
-            roomController.tryDisconnect(session.userName)
+            roomController.tryDisconnect(session.username)
         }
     }
 }

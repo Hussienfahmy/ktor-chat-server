@@ -1,6 +1,6 @@
 package com.h_fahmy.chat.sessions
 
 data class ChatSession(
-    val userName:String,
+    val username:String,
     val sessionId:String
 )
