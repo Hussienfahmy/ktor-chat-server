@@ -1,9 +1,5 @@
 package com.h_fahmy.chat.di
 
-import com.h_fahmy.chat.DATABASE_HOST
-import com.h_fahmy.chat.DATABASE_PASSWORD
-import com.h_fahmy.chat.DATABASE_PORT
-import com.h_fahmy.chat.DATABASE_USERNAME
 import com.h_fahmy.chat.data.MessageDataSourceImp
 import com.h_fahmy.chat.domain.MessageDataSource
 import com.h_fahmy.chat.room.RoomController
@@ -12,6 +8,11 @@ import org.koin.dsl.module
 
 val mainModule = module {
     single {
+        val DATABASE_USERNAME = System.getenv("DATABASE_USERNAME")
+        val DATABASE_PASSWORD = System.getenv("DATABASE_PASSWORD")
+        val DATABASE_HOST = System.getenv("DATABASE_HOST")
+        val DATABASE_PORT = System.getenv("DATABASE_PORT")
+
         MongoClient.create(
             connectionString = "mongodb://$DATABASE_USERNAME:$DATABASE_PASSWORD@$DATABASE_HOST:$DATABASE_PORT/"
         ).getDatabase("message_db")

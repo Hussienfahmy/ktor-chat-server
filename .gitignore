@@ -34,6 +34,3 @@ out/
 
 ### VS Code ###
 .vscode/
-
-### Sectets ###
-/src/main/kotlin/com/h_fahmy/chat/DataBaseSecrets.kt
