@@ -1,0 +1,4 @@
+/build
+/Dockerfile
+/.env
+/local.properties
