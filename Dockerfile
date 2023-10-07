@@ -4,6 +4,8 @@ WORKDIR /app
 
 COPY . .
 
+RUN chmod +x ./gradlew
+
 RUN ./gradlew shadowJar
 
 EXPOSE 8080
