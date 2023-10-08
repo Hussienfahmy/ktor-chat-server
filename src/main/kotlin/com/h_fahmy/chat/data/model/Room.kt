@@ -8,5 +8,5 @@ import org.bson.types.ObjectId
 data class Room(
     val name: String,
     val activeMembers: List<String> = emptyList(),
-    @BsonId val id: String = ObjectId().toString(),
+    @BsonId val _id: String = ObjectId().toString(),
 )

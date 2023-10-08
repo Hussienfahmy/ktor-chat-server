@@ -23,14 +23,14 @@ class RoomsDataSourceImpl(
 
     override suspend fun onMemberJoin(roomId: String, username: String) {
         rooms.updateOne(
-            filter = Filters.eq(Room::id.name, roomId),
+            filter = Filters.eq(Room::_id.name, roomId),
             update = Updates.addToSet(Room::activeMembers.name, username)
         )
     }
 
     override suspend fun onMemberLeft(roomId: String, username: String) {
         rooms.updateOne(
-            filter = Filters.eq(Room::id.name, roomId),
+            filter = Filters.eq(Room::_id.name, roomId),
             update = Updates.pull(Room::activeMembers.name, username)
         )
     }
