@@ -30,7 +30,7 @@ val mainModule = module {
     }
 
     single {
-        ChatRoomController(get())
+        ChatRoomController(get(), get())
     }
 
     single {
