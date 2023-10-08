@@ -2,3 +2,6 @@
 /Dockerfile
 /.env
 /local.properties
+/.gitignore
+/.git
+/Readme.md
