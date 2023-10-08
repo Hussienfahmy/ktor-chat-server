@@ -4,6 +4,7 @@ import com.h_fahmy.chat.data.model.Chat
 import com.h_fahmy.chat.data.model.Message
 import com.h_fahmy.chat.data.model.Room
 import com.h_fahmy.chat.domain.MessageDataSource
+import com.h_fahmy.chat.domain.RoomsDataSource
 import com.h_fahmy.chat.domain.model.Member
 import io.ktor.websocket.Frame
 import io.ktor.websocket.WebSocketSession
@@ -13,11 +14,12 @@ import java.util.concurrent.ConcurrentHashMap
 
 class ChatRoomController(
     private val messageDataSource: MessageDataSource,
+    private val roomsDataSource: RoomsDataSource,
 ) {
     private val rooms = ConcurrentHashMap<String, Room>()
     private val roomMembers = ConcurrentHashMap<String, List<Member>>()
 
-    fun onJoin(
+    suspend fun onJoin(
         roomId: String,
         userName: String,
         sessionId: String,
@@ -35,6 +37,8 @@ class ChatRoomController(
 
         rooms[roomId] = room.copy(activeMembers = room.activeMembers + member.userName)
         roomMembers[roomId] = roomMembers[roomId]?.plus(member) ?: listOf(member)
+
+        roomsDataSource.onMemberJoin(roomId, userName)
     }
 
     suspend fun sendMessage(
@@ -68,5 +72,7 @@ class ChatRoomController(
         val room = rooms[roomId] ?: return
         rooms[roomId] =
             room.copy(activeMembers = room.activeMembers.filter { it != userName })
+
+        roomsDataSource.onMemberLeft(roomId, userName)
     }
 }
