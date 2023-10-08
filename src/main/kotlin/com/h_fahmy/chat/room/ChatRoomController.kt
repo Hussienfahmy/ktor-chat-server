@@ -34,7 +34,7 @@ class ChatRoomController(
         }
 
         rooms[roomId] = room.copy(activeMembers = room.activeMembers + member.userName)
-        roomMembers[roomId] = room.activeMembers.map { Member(roomId, it, sessionId, socket) }
+        roomMembers[roomId] = roomMembers[roomId]?.plus(member) ?: listOf(member)
     }
 
     suspend fun sendMessage(
