@@ -1,7 +1,7 @@
 package com.h_fahmy.chat.routes
 
+import com.h_fahmy.chat.room.ChatRoomController
 import com.h_fahmy.chat.room.MemberAlreadyExistsException
-import com.h_fahmy.chat.room.RoomController
 import com.h_fahmy.chat.sessions.ChatSession
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
@@ -17,7 +17,7 @@ import io.ktor.websocket.close
 import io.ktor.websocket.readText
 import kotlinx.coroutines.channels.consumeEach
 
-fun Route.chatSocket(roomController: RoomController) {
+fun Route.chatSocket(chatRoomController: ChatRoomController) {
     webSocket(path = "/chat-socket") {
         val session = call.sessions.get<ChatSession>()
         if (session == null) {
@@ -26,14 +26,16 @@ fun Route.chatSocket(roomController: RoomController) {
         }
 
         try {
-            roomController.onJoin(
+            chatRoomController.onJoin(
+                roomId = session.roomId,
                 userName = session.username,
                 sessionId = session.sessionId,
                 socket = this
             )
             incoming.consumeEach { frame ->
                 if (frame is Frame.Text) {
-                    roomController.sendMessage(
+                    chatRoomController.sendMessage(
+                        roomId = session.roomId,
                         senderUserName = session.username,
                         message = frame.readText()
                     )
@@ -45,14 +47,19 @@ fun Route.chatSocket(roomController: RoomController) {
             e.printStackTrace()
             call.respond(HttpStatusCode.InternalServerError, "Internal server error")
         } finally {
-            roomController.tryDisconnect(session.username)
+            chatRoomController.tryDisconnect(session.roomId, session.username)
         }
     }
 }
 
-fun Route.getAllMessages(roomController: RoomController) {
-    get("/messages") {
-        val messages = roomController.getMessages()
+fun Route.getAllMessages(chatRoomController: ChatRoomController) {
+    get("/messages/{roomId}") {
+        val roomId = call.parameters["roomId"] ?: return@get call.respond(
+            status = HttpStatusCode.BadRequest,
+            message = "Missing room id"
+        )
+
+        val messages = chatRoomController.getMessages(roomId)
         call.respond(status = HttpStatusCode.OK, messages)
     }
 }
