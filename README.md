@@ -1,6 +1,8 @@
 # ktor-chat-server
 Example app uses ktor server, mongo db as the backend
 
+For android app uses this server visit this [repo](https://github.com/Hussienfahmy/Ktor_Chat_App)
+
 # Features
 - Create Rooms
 - Send Messages in real time to room members with `Websockets`
